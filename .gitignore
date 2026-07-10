@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.venv/
+venv/
+
+# SQLite databases (never commit trade data or keys)
+*.db
+*.sqlite
+*.sqlite3
+
+# Secrets — live API keys must never enter the repo
+.env
+*.key
+keystore*
