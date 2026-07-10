@@ -60,6 +60,7 @@ from .intelligence.claude_client import AnthropicClaudeClient, LLMClient
 from .intelligence.news import AlpacaNewsClient
 from .orchestration.loop import TradingLoop, TradeRecorder, Bucket
 from .orchestration import risk as risk
+from .backtest.engine import Backtester, BacktestConfig, BacktestResult
 
 __all__ = [
     "CalibrationConfig",
@@ -117,4 +118,7 @@ __all__ = [
     "TradeRecorder",
     "Bucket",
     "risk",
+    "Backtester",
+    "BacktestConfig",
+    "BacktestResult",
 ]

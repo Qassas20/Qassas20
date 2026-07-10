@@ -28,6 +28,7 @@ packages = [
     "trading_bot.signals",
     "trading_bot.intelligence",
     "trading_bot.orchestration",
+    "trading_bot.backtest",
 ]
 
 [tool.setuptools.package-data]
