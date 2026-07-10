@@ -34,6 +34,33 @@ from .reporting.metrics import (
 from .reporting.uat import evaluate_bucket, Verdict, UATResult
 from .execution.alpaca_cli import AlpacaExecutionAgent, BucketScope, ExecutionError
 
+# --- Live-engine integrations (Integration Spec) ---
+from .broker.base import (
+    BrokerClient,
+    Bar,
+    Account,
+    Position,
+    Order,
+    Side,
+    OrderType,
+    make_client_order_id,
+    parse_bucket_id,
+)
+from .broker.accounting import BucketLedger, BucketCapital
+from .broker.alpaca import AlpacaBrokerClient
+from .signals.engine import SignalEngine, RuleSignalEngine, Signal, RuleConfig
+from .intelligence.market_intelligence import (
+    MarketIntelligence,
+    ClaudeMarketIntelligence,
+    MarketContext,
+    Sentiment,
+    VolLevel,
+)
+from .intelligence.claude_client import AnthropicClaudeClient, LLMClient
+from .intelligence.news import AlpacaNewsClient
+from .orchestration.loop import TradingLoop, TradeRecorder, Bucket
+from .orchestration import risk as risk
+
 __all__ = [
     "CalibrationConfig",
     "FeeSchedule",
@@ -61,4 +88,33 @@ __all__ = [
     "AlpacaExecutionAgent",
     "BucketScope",
     "ExecutionError",
+    # integrations
+    "BrokerClient",
+    "Bar",
+    "Account",
+    "Position",
+    "Order",
+    "Side",
+    "OrderType",
+    "make_client_order_id",
+    "parse_bucket_id",
+    "BucketLedger",
+    "BucketCapital",
+    "AlpacaBrokerClient",
+    "SignalEngine",
+    "RuleSignalEngine",
+    "Signal",
+    "RuleConfig",
+    "MarketIntelligence",
+    "ClaudeMarketIntelligence",
+    "MarketContext",
+    "Sentiment",
+    "VolLevel",
+    "AnthropicClaudeClient",
+    "LLMClient",
+    "AlpacaNewsClient",
+    "TradingLoop",
+    "TradeRecorder",
+    "Bucket",
+    "risk",
 ]

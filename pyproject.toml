@@ -9,10 +9,13 @@ description = "Reality Calibration Layer for the multi-bucket trading bot — ma
 readme = "docs/CALIBRATION.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
-dependencies = []   # stdlib only (sqlite3, subprocess, dataclasses)
+dependencies = []   # stdlib only (sqlite3, urllib, subprocess, dataclasses)
 
 [project.optional-dependencies]
 dev = ["pytest"]
+# Only needed for the real backend Claude Market-Intelligence call; the rest of
+# the package (and all tests) run without it.
+claude = ["anthropic"]
 
 [tool.setuptools]
 packages = [
@@ -21,6 +24,10 @@ packages = [
     "trading_bot.db",
     "trading_bot.execution",
     "trading_bot.reporting",
+    "trading_bot.broker",
+    "trading_bot.signals",
+    "trading_bot.intelligence",
+    "trading_bot.orchestration",
 ]
 
 [tool.setuptools.package-data]
