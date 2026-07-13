@@ -103,18 +103,45 @@ class AlpacaBrokerClient(BrokerClient):
         return self._transport(method, f"{self.data_url}{path}", self._headers(), body)
 
     # -- market data -------------------------------------------------------
-    def get_bars(self, symbol: str, timeframe: str = "1Min", limit: int = 200) -> List[Bar]:
-        path = f"/v2/stocks/{symbol}/bars?timeframe={timeframe}&limit={limit}&feed={self.feed}"
-        raw = self._data("GET", path)
-        bars_raw = raw.get("bars", []) if isinstance(raw, dict) else []
-        return [
-            Bar(
-                symbol=symbol,
-                timestamp_ms=_ts_to_ms(b.get("t")),
-                open=b["o"], high=b["h"], low=b["l"], close=b["c"], volume=b["v"],
-            )
-            for b in bars_raw
-        ]
+    def get_bars(
+        self,
+        symbol: str,
+        timeframe: str = "1Min",
+        limit: int = 200,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+    ) -> List[Bar]:
+        """Historical bars, paginating via ``next_page_token`` until ``limit``.
+
+        Alpaca caps each page at 10,000 bars, so a backtest wanting more follows
+        the page token. ``start``/``end`` (RFC3339) bound a historical range;
+        omit them to get the most recent ``limit`` bars.
+        """
+        collected: List[Bar] = []
+        page_token: Optional[str] = None
+        remaining = limit
+        while remaining > 0:
+            page_limit = min(remaining, 10_000)
+            params = [f"timeframe={timeframe}", f"limit={page_limit}", f"feed={self.feed}"]
+            if start:
+                params.append(f"start={start}")
+            if end:
+                params.append(f"end={end}")
+            if page_token:
+                params.append(f"page_token={page_token}")
+            raw = self._data("GET", f"/v2/stocks/{symbol}/bars?" + "&".join(params))
+            if not isinstance(raw, dict):
+                break
+            for b in raw.get("bars") or []:
+                collected.append(Bar(
+                    symbol=symbol, timestamp_ms=_ts_to_ms(b.get("t")),
+                    open=b["o"], high=b["h"], low=b["l"], close=b["c"], volume=b["v"],
+                ))
+            remaining = limit - len(collected)
+            page_token = raw.get("next_page_token")
+            if not page_token:
+                break
+        return collected[:limit]
 
     def stream_bars(self, symbols: List[str], on_bar: Callable[[Bar], None]) -> None:
         if self._stream_source is None:
